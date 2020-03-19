@@ -1,0 +1,19 @@
+[package]
+name = "strava-auth"
+version = "0.1.0"
+authors = ["Saju Thankappan <sajuthankappan@gmail.com>"]
+edition = "2018"
+license = "MIT OR Apache-2.0"
+description = "Strava auth api bindings"
+homepage = "https://github.com/sajuthankappan/strava-auth-rs"
+repository = "https://github.com/sajuthankappan/strava-auth-rs"
+readme = "README.md"
+keywords = ["strava"]
+categories = ["api-bindings"]
+
+[dependencies]
+serde = { version = "1.0.105", features = ["derive"] }
+serde_json = "1.0.48"
+surf = "1.0.3"
+async-std="1.5.0"
+env_logger = "0.7.1"
