@@ -42,8 +42,6 @@ impl TokenApi {
             refresh_token: None,
             code: Some(authorization_code),
         };
-        dbg!(&uri);
-        dbg!(&token_request);
 
         let token = surf::post(uri)
             .body_json(token_request)?
