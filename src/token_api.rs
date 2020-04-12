@@ -1,6 +1,7 @@
 use super::configuration::Configuration;
 use serde::{Deserialize, Serialize};
 use std::rc::Rc;
+use strava_data::models::SummaryAthlete;
 
 pub struct TokenApi {
     pub configuration: Rc<Configuration>,
@@ -16,11 +17,13 @@ struct TokenRequest {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct Token {
+pub struct TokenRecord {
+    pub token_type: String,
     pub access_token: String,
     pub expires_at: u64,
     pub expires_in: u64,
     pub refresh_token: String,
+    pub athlete : Option<SummaryAthlete>,
 }
 
 impl TokenApi {
@@ -33,7 +36,7 @@ impl TokenApi {
     pub async fn create_access_token(
         &self,
         authorization_code: String,
-    ) -> Result<Token, Box<dyn std::error::Error + Send + Sync + 'static>> {
+    ) -> Result<TokenRecord, Box<dyn std::error::Error + Send + Sync + 'static>> {
         let uri = format!("{}/oauth/token", self.configuration.base_path);
         let token_request = &TokenRequest {
             client_id: self.configuration.client_id.to_owned(),
@@ -45,7 +48,7 @@ impl TokenApi {
 
         let token = surf::post(uri)
             .body_json(token_request)?
-            .recv_json::<Token>()
+            .recv_json::<TokenRecord>()
             .await?;
         Ok(token)
     }
@@ -53,7 +56,7 @@ impl TokenApi {
     pub async fn refresh_access_token(
         &self,
         refresh_token: String,
-    ) -> Result<Token, Box<dyn std::error::Error + Send + Sync + 'static>> {
+    ) -> Result<TokenRecord, Box<dyn std::error::Error + Send + Sync + 'static>> {
         let uri = format!("{}/oauth/token", self.configuration.base_path);
         let token_request = &TokenRequest {
             client_id: self.configuration.client_id.to_owned(),
@@ -65,7 +68,7 @@ impl TokenApi {
 
         let token = surf::post(uri)
             .body_json(token_request)?
-            .recv_json::<Token>()
+            .recv_json::<TokenRecord>()
             .await?;
         Ok(token)
     }
