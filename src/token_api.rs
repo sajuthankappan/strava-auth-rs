@@ -20,8 +20,8 @@ struct TokenRequest {
 pub struct TokenRecord {
     pub token_type: String,
     pub access_token: String,
-    pub expires_at: u64,
-    pub expires_in: u64,
+    pub expires_at: i64,
+    pub expires_in: i64,
     pub refresh_token: String,
     pub athlete : Option<SummaryAthlete>,
 }
