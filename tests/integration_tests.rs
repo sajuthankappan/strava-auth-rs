@@ -8,7 +8,7 @@ fn test_create_access_token() {
 
     let configuration = Configuration::new(String::from("client_id"), String::from("client_secret"));
     let api_client = AuthClient::new(configuration);
-    let acceess_token = task::block_on(api_client.token_api.create_access_token(String::from("authorization_code")));
+    let acceess_token = task::block_on(api_client.token_api.create_token(String::from("authorization_code")));
     dbg!(acceess_token.unwrap());
 }
 
@@ -18,6 +18,6 @@ fn test_refresh_access_token() {
 
     let configuration = Configuration::new(String::from("client_id"), String::from("client_secret"));
     let api_client = AuthClient::new(configuration);
-    let acceess_token = task::block_on(api_client.token_api.refresh_access_token(String::from("refresh_token")));
+    let acceess_token = task::block_on(api_client.token_api.refresh_token(String::from("refresh_token")));
     dbg!(acceess_token.unwrap());
 }

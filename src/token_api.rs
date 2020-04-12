@@ -1,4 +1,5 @@
 use super::configuration::Configuration;
+use getset::{Getters, Setters};
 use serde::{Deserialize, Serialize};
 use std::rc::Rc;
 use strava_data::models::SummaryAthlete;
@@ -8,7 +9,7 @@ pub struct TokenApi {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-struct TokenRequest {
+struct StravaTokenPostBody {
     client_id: String,
     client_secret: String,
     grant_type: String,
@@ -16,14 +17,15 @@ struct TokenRequest {
     code: Option<String>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Debug, Serialize, Deserialize, Getters, Setters, Default)]
+#[getset(get = "pub", set = "pub")]
 pub struct TokenRecord {
-    pub token_type: String,
-    pub access_token: String,
-    pub expires_at: i64,
-    pub expires_in: i64,
-    pub refresh_token: String,
-    pub athlete : Option<SummaryAthlete>,
+    token_type: String,
+    access_token: String,
+    expires_at: i64,
+    expires_in: i64,
+    refresh_token: String,
+    athlete: Option<SummaryAthlete>,
 }
 
 impl TokenApi {
@@ -33,12 +35,12 @@ impl TokenApi {
         }
     }
 
-    pub async fn create_access_token(
+    pub async fn create_token(
         &self,
         authorization_code: String,
     ) -> Result<TokenRecord, Box<dyn std::error::Error + Send + Sync + 'static>> {
         let uri = format!("{}/oauth/token", self.configuration.base_path);
-        let token_request = &TokenRequest {
+        let token_request = &StravaTokenPostBody {
             client_id: self.configuration.client_id.to_owned(),
             client_secret: self.configuration.client_secret.to_owned(),
             grant_type: String::from("authorization_code"),
@@ -53,12 +55,12 @@ impl TokenApi {
         Ok(token)
     }
 
-    pub async fn refresh_access_token(
+    pub async fn refresh_token(
         &self,
         refresh_token: String,
     ) -> Result<TokenRecord, Box<dyn std::error::Error + Send + Sync + 'static>> {
         let uri = format!("{}/oauth/token", self.configuration.base_path);
-        let token_request = &TokenRequest {
+        let post_body = &StravaTokenPostBody {
             client_id: self.configuration.client_id.to_owned(),
             client_secret: self.configuration.client_secret.to_owned(),
             grant_type: String::from("refresh_token"),
@@ -67,7 +69,7 @@ impl TokenApi {
         };
 
         let token = surf::post(uri)
-            .body_json(token_request)?
+            .body_json(post_body)?
             .recv_json::<TokenRecord>()
             .await?;
         Ok(token)
