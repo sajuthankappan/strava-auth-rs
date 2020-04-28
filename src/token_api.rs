@@ -1,6 +1,8 @@
 use super::configuration::Configuration;
+use crate::error::StravaAuthError;
 use getset::{Getters, Setters};
 use serde::{Deserialize, Serialize};
+use std::format;
 use std::rc::Rc;
 use strava_data::models::SummaryAthlete;
 
@@ -38,7 +40,7 @@ impl TokenApi {
     pub async fn create_token(
         &self,
         authorization_code: String,
-    ) -> Result<TokenRecord, Box<dyn std::error::Error + Send + Sync + 'static>> {
+    ) -> Result<TokenRecord, StravaAuthError> {
         let uri = format!("{}/oauth/token", self.configuration.base_path);
         let token_request = &StravaTokenPostBody {
             client_id: self.configuration.client_id.to_owned(),
@@ -48,17 +50,47 @@ impl TokenApi {
             code: Some(authorization_code),
         };
 
-        let token = surf::post(uri)
-            .body_json(token_request)?
-            .recv_json::<TokenRecord>()
-            .await?;
+        let mut response = surf::post(uri)
+            .body_json(token_request)
+            .map_err(|err| StravaAuthError {
+                code: 100,
+                message: format!("{}", err),
+            })?
+            .await
+            .map_err(|err| StravaAuthError {
+                code: 101,
+                message: format!("{}", err),
+            })?;
+
+        if response.status() != 200 {
+            let body = response
+                .body_string()
+                .await
+                .map_err(|err| StravaAuthError {
+                    code: 102,
+                    message: format!("{}", err),
+                })?;
+
+            return Err(StravaAuthError {
+                code: 103,
+                message: format!("Error http code: {}. Body: {}", response.status(), body),
+            });
+        }
+
+        let token = response
+            .body_json::<TokenRecord>()
+            .await
+            .map_err(|err| StravaAuthError {
+                code: 104,
+                message: format!("{}", err),
+            })?;
         Ok(token)
     }
 
     pub async fn refresh_token(
         &self,
         refresh_token: String,
-    ) -> Result<TokenRecord, Box<dyn std::error::Error + Send + Sync + 'static>> {
+    ) -> Result<TokenRecord, StravaAuthError> {
         let uri = format!("{}/oauth/token", self.configuration.base_path);
         let post_body = &StravaTokenPostBody {
             client_id: self.configuration.client_id.to_owned(),
@@ -68,10 +100,40 @@ impl TokenApi {
             code: None,
         };
 
-        let token = surf::post(uri)
-            .body_json(post_body)?
-            .recv_json::<TokenRecord>()
-            .await?;
+        let mut response = surf::post(uri)
+            .body_json(post_body)
+            .map_err(|err| StravaAuthError {
+                code: 100,
+                message: format!("{}", err),
+            })?
+            .await
+            .map_err(|err| StravaAuthError {
+                code: 101,
+                message: format!("{}", err),
+            })?;
+
+        if response.status() != 200 {
+            let body = response
+                .body_string()
+                .await
+                .map_err(|err| StravaAuthError {
+                    code: 102,
+                    message: format!("{}", err),
+                })?;
+
+            return Err(StravaAuthError {
+                code: 103,
+                message: format!("Error http code: {}. Body: {}", response.status(), body),
+            });
+        }
+
+        let token = response
+            .body_json::<TokenRecord>()
+            .await
+            .map_err(|err| StravaAuthError {
+                code: 104,
+                message: format!("{}", err),
+            })?;
         Ok(token)
     }
 }

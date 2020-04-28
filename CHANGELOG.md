@@ -1,3 +1,7 @@
+## 0.3.0
+
+* Add basic custom error type
+
 ## 0.2.3
 
 * Fix: Make TokenRecord as pub
