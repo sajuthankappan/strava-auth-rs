@@ -1,3 +1,7 @@
+## 0.3.1
+
+* Update strava-data version
+
 ## 0.3.0
 
 * Add basic custom error type

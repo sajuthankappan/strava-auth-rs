@@ -1,6 +1,6 @@
 [package]
 name = "strava-auth"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["Saju Thankappan <sajuthankappan@gmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
@@ -18,7 +18,7 @@ surf = "1.0.3"
 async-std="1.5.0"
 log = "0.4.8"
 getset = "0.1.0"
-strava-data = "0.2.3"
+strava-data = "0.3.0"
 
 [dev-dependencies]
 env_logger = "0.7.1"
