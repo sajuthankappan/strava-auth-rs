@@ -3,11 +3,11 @@ use crate::error::StravaAuthError;
 use getset::{Getters, Setters};
 use serde::{Deserialize, Serialize};
 use std::format;
-use std::rc::Rc;
+use std::sync::Arc;
 use strava_data::models::SummaryAthlete;
 
 pub struct TokenApi {
-    pub configuration: Rc<Configuration>,
+    pub configuration: Arc<Configuration>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -31,7 +31,7 @@ pub struct TokenRecord {
 }
 
 impl TokenApi {
-    pub fn new(configuration: Rc<Configuration>) -> TokenApi {
+    pub fn new(configuration: Arc<Configuration>) -> TokenApi {
         TokenApi {
             configuration: configuration,
         }

@@ -1,3 +1,7 @@
+## 0.3.2
+
+* Change configuration from Rc to Arc
+
 ## 0.3.1
 
 * Update strava-data version
