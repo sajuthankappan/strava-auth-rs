@@ -1,3 +1,7 @@
+## 0.4.0
+
+* Replace surf with reqwest & update strava-data to 0.4.0
+
 ## 0.3.2
 
 * Change configuration from Rc to Arc

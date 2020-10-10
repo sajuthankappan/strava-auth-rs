@@ -1,6 +1,7 @@
 use super::configuration::Configuration;
 use crate::error::StravaAuthError;
 use getset::{Getters, Setters};
+use reqwest::{Client, StatusCode};
 use serde::{Deserialize, Serialize};
 use std::format;
 use std::sync::Arc;
@@ -41,7 +42,7 @@ impl TokenApi {
         &self,
         authorization_code: String,
     ) -> Result<TokenRecord, StravaAuthError> {
-        let uri = format!("{}/oauth/token", self.configuration.base_path);
+        let url = format!("{}/oauth/token", self.configuration.base_path);
         let token_request = &StravaTokenPostBody {
             client_id: self.configuration.client_id.to_owned(),
             client_secret: self.configuration.client_secret.to_owned(),
@@ -50,35 +51,31 @@ impl TokenApi {
             code: Some(authorization_code),
         };
 
-        let mut response = surf::post(uri)
-            .body_json(token_request)
+        let res = Client::new()
+            .post(url.as_str())
+            .json(token_request)
+            .send()
+            .await
             .map_err(|err| StravaAuthError {
                 code: 100,
                 message: format!("{}", err),
-            })?
-            .await
-            .map_err(|err| StravaAuthError {
-                code: 101,
+            })?;
+
+        if res.status().clone() != StatusCode::OK {
+            let status = res.status().clone();
+            let body = res.text().await.map_err(|err| StravaAuthError {
+                code: 102,
                 message: format!("{}", err),
             })?;
 
-        if response.status() != 200 {
-            let body = response
-                .body_string()
-                .await
-                .map_err(|err| StravaAuthError {
-                    code: 102,
-                    message: format!("{}", err),
-                })?;
-
             return Err(StravaAuthError {
                 code: 103,
-                message: format!("Error http code: {}. Body: {}", response.status(), body),
+                message: format!("Error http code: {}. Body: {}", status, body),
             });
         }
 
-        let token = response
-            .body_json::<TokenRecord>()
+        let token = res
+            .json::<TokenRecord>()
             .await
             .map_err(|err| StravaAuthError {
                 code: 104,
@@ -91,7 +88,7 @@ impl TokenApi {
         &self,
         refresh_token: String,
     ) -> Result<TokenRecord, StravaAuthError> {
-        let uri = format!("{}/oauth/token", self.configuration.base_path);
+        let url = format!("{}/oauth/token", self.configuration.base_path);
         let post_body = &StravaTokenPostBody {
             client_id: self.configuration.client_id.to_owned(),
             client_secret: self.configuration.client_secret.to_owned(),
@@ -100,35 +97,31 @@ impl TokenApi {
             code: None,
         };
 
-        let mut response = surf::post(uri)
-            .body_json(post_body)
+        let res = Client::new()
+            .post(url.as_str())
+            .json(post_body)
+            .send()
+            .await
             .map_err(|err| StravaAuthError {
                 code: 100,
                 message: format!("{}", err),
-            })?
-            .await
-            .map_err(|err| StravaAuthError {
-                code: 101,
+            })?;
+
+        if res.status().clone() != StatusCode::OK {
+            let status = res.status().clone();
+            let body = res.text().await.map_err(|err| StravaAuthError {
+                code: 102,
                 message: format!("{}", err),
             })?;
 
-        if response.status() != 200 {
-            let body = response
-                .body_string()
-                .await
-                .map_err(|err| StravaAuthError {
-                    code: 102,
-                    message: format!("{}", err),
-                })?;
-
             return Err(StravaAuthError {
                 code: 103,
-                message: format!("Error http code: {}. Body: {}", response.status(), body),
+                message: format!("Error http code: {}. Body: {}", status, body),
             });
         }
 
-        let token = response
-            .body_json::<TokenRecord>()
+        let token = res
+            .json::<TokenRecord>()
             .await
             .map_err(|err| StravaAuthError {
                 code: 104,
