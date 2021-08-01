@@ -4,6 +4,7 @@ use std::env;
 
 #[tokio::test]
 async fn test_create_access_token() {
+    dotenv::dotenv().ok();
     env_logger::init();
 
     let client_id = env::var("CLIENT_ID").unwrap();
@@ -18,6 +19,7 @@ async fn test_create_access_token() {
 
 #[tokio::test]
 async fn test_refresh_access_token() {
+    dotenv::dotenv().ok();
     env_logger::init();
 
     let client_id = env::var("CLIENT_ID").unwrap();

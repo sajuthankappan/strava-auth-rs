@@ -1,3 +1,7 @@
+## 0.5.0
+
+* Upgrade reqwest to 0.11.4 & strava-data to 0.5.0
+
 ## 0.4.0
 
 * Replace surf with reqwest & update strava-data to 0.4.0
