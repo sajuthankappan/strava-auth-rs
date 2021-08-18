@@ -1,3 +1,7 @@
+## 0.6.0
+
+* Remove dependency on getset
+
 ## 0.5.0
 
 * Upgrade reqwest to 0.11.4 & strava-data to 0.5.0

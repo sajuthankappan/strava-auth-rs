@@ -1,6 +1,5 @@
 use super::configuration::Configuration;
 use crate::error::StravaAuthError;
-use getset::{Getters, Setters};
 use reqwest::{Client, StatusCode};
 use serde::{Deserialize, Serialize};
 use std::format;
@@ -13,22 +12,21 @@ pub struct TokenApi {
 
 #[derive(Deserialize, Serialize, Debug)]
 struct StravaTokenPostBody {
-    client_id: String,
-    client_secret: String,
-    grant_type: String,
-    refresh_token: Option<String>,
-    code: Option<String>,
+    pub client_id: String,
+    pub client_secret: String,
+    pub grant_type: String,
+    pub refresh_token: Option<String>,
+    pub code: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Getters, Setters, Default)]
-#[getset(get = "pub", set = "pub")]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct TokenRecord {
-    token_type: String,
-    access_token: String,
-    expires_at: i64,
-    expires_in: i64,
-    refresh_token: String,
-    athlete: Option<SummaryAthlete>,
+    pub token_type: String,
+    pub access_token: String,
+    pub expires_at: i64,
+    pub expires_in: i64,
+    pub refresh_token: String,
+    pub athlete: Option<SummaryAthlete>,
 }
 
 impl TokenApi {
