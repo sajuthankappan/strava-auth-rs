@@ -1,6 +1,9 @@
 ## Unreleased
 
 * Breaking: Replace `StravaAuthError { code, message }` with a `thiserror` enum (`Request`, `Status { status, body }`, `Decode`). Underlying errors are available via `Error::source()`
+* Breaking: `AuthClient::token_api` is now `TokenApi` instead of `Box<TokenApi>`
+* Breaking: `TokenApi` has a private field, so it can no longer be built with a struct literal; use `TokenApi::new`
+* Reuse a single HTTP client across requests instead of creating one per request
 * Upgrade to Rust 2024 edition (minimum Rust 1.87)
 * Remove unused `log` dependency
 * Upgrade reqwest to 0.13, which uses rustls instead of native-tls (OpenSSL) for TLS

@@ -7,6 +7,7 @@ use strava_data::models::SummaryAthlete;
 
 pub struct TokenApi {
     pub configuration: Arc<Configuration>,
+    client: Client,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -30,7 +31,10 @@ pub struct TokenRecord {
 
 impl TokenApi {
     pub fn new(configuration: Arc<Configuration>) -> TokenApi {
-        TokenApi { configuration }
+        TokenApi {
+            configuration,
+            client: Client::new(),
+        }
     }
 
     pub async fn create_token(
@@ -67,7 +71,8 @@ impl TokenApi {
     ) -> Result<TokenRecord, StravaAuthError> {
         let url = format!("{}/oauth/token", self.configuration.base_path);
 
-        let res = Client::new()
+        let res = self
+            .client
             .post(url.as_str())
             .json(&post_body)
             .send()

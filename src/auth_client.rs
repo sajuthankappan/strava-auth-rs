@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 pub struct AuthClient {
     pub configuration: Arc<Configuration>,
-    pub token_api: Box<TokenApi>,
+    pub token_api: TokenApi,
 }
 
 impl AuthClient {
@@ -13,7 +13,7 @@ impl AuthClient {
 
         AuthClient {
             configuration: Arc::clone(&arc),
-            token_api: Box::new(TokenApi::new(arc)),
+            token_api: TokenApi::new(arc),
         }
     }
 }
