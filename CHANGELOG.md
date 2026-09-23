@@ -1,4 +1,4 @@
-## Unreleased
+## 0.7.0
 
 * Breaking: Replace `StravaAuthError { code, message }` with a `thiserror` enum (`Request`, `Status { status, body }`, `Decode`). Underlying errors are available via `Error::source()`
 * Breaking: `AuthClient::token_api` is now `TokenApi` instead of `Box<TokenApi>`
@@ -9,6 +9,10 @@
 * Remove unused `log` dependency
 * Upgrade reqwest to 0.13, which uses rustls instead of native-tls (OpenSSL) for TLS
 * Remove unused `serde_json` dependency
+
+## 0.6.1
+
+* Upgrade strava-data to 0.6.0
 
 ## 0.6.0
 

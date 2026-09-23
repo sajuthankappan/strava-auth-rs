@@ -1,6 +1,6 @@
 [package]
 name = "strava-auth"
-version = "0.6.1"
+version = "0.7.0"
 authors = ["Saju Thankappan <sajuthankappan@gmail.com>"]
 edition = "2024"
 rust-version = "1.87"
@@ -11,6 +11,7 @@ repository = "https://github.com/sajuthankappan/strava-auth-rs"
 readme = "README.md"
 keywords = ["strava"]
 categories = ["api-bindings"]
+exclude = ["CLAUDE.md", ".github"]
 
 [dependencies]
 reqwest = { version = "0.13", features = ["json"] }
