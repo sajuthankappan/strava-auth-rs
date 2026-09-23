@@ -12,8 +12,8 @@ impl AuthClient {
         let arc = Arc::new(configuration);
 
         AuthClient {
-            configuration: arc.clone(),
-            token_api: Box::new(TokenApi::new(arc.clone())),
+            configuration: Arc::clone(&arc),
+            token_api: Box::new(TokenApi::new(arc)),
         }
     }
 }
