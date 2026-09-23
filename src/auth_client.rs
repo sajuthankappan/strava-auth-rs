@@ -1,5 +1,5 @@
-use super::configuration::Configuration;
 use super::TokenApi;
+use super::configuration::Configuration;
 use std::sync::Arc;
 
 pub struct AuthClient {
