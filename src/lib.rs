@@ -12,3 +12,6 @@ pub mod error;
 
 /// Re-exported so callers of `with_client` can build a compatible `reqwest::Client`.
 pub use reqwest;
+
+/// Re-exported so callers can name `TokenRecord::athlete`'s `SummaryAthlete` type with the matching version.
+pub use strava_data;

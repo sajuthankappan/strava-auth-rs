@@ -1,3 +1,9 @@
+## Unreleased
+
+* Breaking: Upgrade strava-data from 0.6 to 0.8, so `TokenRecord::athlete` is now a strava-data 0.8 `SummaryAthlete`. Its fields and JSON format are unchanged
+* Re-export `strava_data`, so `strava_auth::strava_data::models::SummaryAthlete` always matches `TokenRecord::athlete`
+* strava-data no longer pulls in native-tls (OpenSSL) or a second copy of reqwest
+
 ## 0.7.0
 
 * Breaking: Replace `StravaAuthError { code, message }` with a `thiserror` enum (`Request`, `Status { status, body }`, `Decode`). Underlying errors are available via `Error::source()`
