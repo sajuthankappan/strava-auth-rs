@@ -1,3 +1,7 @@
+## Unreleased
+
+* Upgrade to Rust 2024 edition (minimum Rust 1.85)
+
 ## 0.6.0
 
 * Remove dependency on getset

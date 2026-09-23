@@ -2,7 +2,8 @@
 name = "strava-auth"
 version = "0.6.1"
 authors = ["Saju Thankappan <sajuthankappan@gmail.com>"]
-edition = "2018"
+edition = "2024"
+rust-version = "1.85"
 license = "MIT OR Apache-2.0"
 description = "Strava auth api bindings"
 homepage = "https://github.com/sajuthankappan/strava-auth-rs"
