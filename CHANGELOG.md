@@ -1,4 +1,4 @@
-## Unreleased
+## 0.8.0
 
 * Breaking: Upgrade strava-data from 0.6 to 0.8, so `TokenRecord::athlete` is now a strava-data 0.8 `SummaryAthlete`. Its fields and JSON format are unchanged
 * Re-export `strava_data`, so `strava_auth::strava_data::models::SummaryAthlete` always matches `TokenRecord::athlete`
