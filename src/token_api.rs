@@ -31,9 +31,15 @@ pub struct TokenRecord {
 
 impl TokenApi {
     pub fn new(configuration: Arc<Configuration>) -> TokenApi {
+        TokenApi::with_client(configuration, Client::new())
+    }
+
+    /// Creates a `TokenApi` that sends requests through `client`, e.g. one
+    /// configured with timeouts or a proxy.
+    pub fn with_client(configuration: Arc<Configuration>, client: Client) -> TokenApi {
         TokenApi {
             configuration,
-            client: Client::new(),
+            client,
         }
     }
 
@@ -95,5 +101,29 @@ impl TokenApi {
         res.json::<TokenRecord>()
             .await
             .map_err(|err| StravaAuthError::Decode(err.into()))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn with_client_sends_requests_through_given_client() {
+        let mut configuration = Configuration::new(String::from("id"), String::from("secret"));
+        // Nothing listens on port 1, so the request fails before reaching Strava.
+        configuration.base_path = String::from("http://127.0.0.1:1");
+        let client = Client::builder()
+            .timeout(std::time::Duration::from_secs(5))
+            .build()
+            .unwrap();
+        let token_api = TokenApi::with_client(Arc::new(configuration), client);
+
+        let err = token_api
+            .refresh_token(String::from("refresh"))
+            .await
+            .unwrap_err();
+
+        assert!(matches!(err, StravaAuthError::Request(_)), "{err:?}");
     }
 }

@@ -4,6 +4,7 @@
 * Breaking: `AuthClient::token_api` is now `TokenApi` instead of `Box<TokenApi>`
 * Breaking: `TokenApi` has a private field, so it can no longer be built with a struct literal; use `TokenApi::new`
 * Reuse a single HTTP client across requests instead of creating one per request
+* Add `AuthClient::with_client` and `TokenApi::with_client` to supply a custom `reqwest::Client`, and re-export `reqwest`
 * Upgrade to Rust 2024 edition (minimum Rust 1.87)
 * Remove unused `log` dependency
 * Upgrade reqwest to 0.13, which uses rustls instead of native-tls (OpenSSL) for TLS

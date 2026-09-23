@@ -9,3 +9,6 @@ pub use token_api::TokenApi;
 pub use token_api::TokenRecord;
 
 pub mod error;
+
+/// Re-exported so callers of `with_client` can build a compatible `reqwest::Client`.
+pub use reqwest;
