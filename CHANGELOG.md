@@ -2,6 +2,8 @@
 
 * Upgrade to Rust 2024 edition (minimum Rust 1.87)
 * Remove unused `log` dependency
+* Upgrade reqwest to 0.13, which uses rustls instead of native-tls (OpenSSL) for TLS
+* Remove unused `serde_json` dependency
 
 ## 0.6.0
 

@@ -4,7 +4,7 @@ use strava_auth::{AuthClient, Configuration};
 #[tokio::test]
 #[ignore = "calls the live Strava API; needs .env"]
 async fn test_create_access_token() {
-    dotenv::dotenv().ok();
+    dotenvy::dotenv().ok();
     let _ = env_logger::try_init();
 
     let client_id = env::var("CLIENT_ID").unwrap();
@@ -24,7 +24,7 @@ async fn test_create_access_token() {
 #[tokio::test]
 #[ignore = "calls the live Strava API; needs .env"]
 async fn test_refresh_access_token() {
-    dotenv::dotenv().ok();
+    dotenvy::dotenv().ok();
     let _ = env_logger::try_init();
 
     let client_id = env::var("CLIENT_ID").unwrap();
