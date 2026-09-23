@@ -1,6 +1,6 @@
 ## Unreleased
 
-* Upgrade to Rust 2024 edition (minimum Rust 1.85)
+* Upgrade to Rust 2024 edition (minimum Rust 1.87)
 * Remove unused `log` dependency
 
 ## 0.6.0
