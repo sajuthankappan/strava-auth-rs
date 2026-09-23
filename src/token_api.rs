@@ -72,29 +72,23 @@ impl TokenApi {
             .json(&post_body)
             .send()
             .await
-            .map_err(|err| StravaAuthError {
-                code: 100,
-                message: format!("{}", err),
-            })?;
+            .map_err(|err| StravaAuthError::Request(err.into()))?;
 
         let status = res.status();
         if status != StatusCode::OK {
-            let body = res.text().await.map_err(|err| StravaAuthError {
-                code: 102,
-                message: format!("{}", err),
-            })?;
+            let body = res
+                .text()
+                .await
+                .map_err(|err| StravaAuthError::Request(err.into()))?;
 
-            return Err(StravaAuthError {
-                code: 103,
-                message: format!("Error http code: {}. Body: {}", status, body),
+            return Err(StravaAuthError::Status {
+                status: status.as_u16(),
+                body,
             });
         }
 
         res.json::<TokenRecord>()
             .await
-            .map_err(|err| StravaAuthError {
-                code: 104,
-                message: format!("{}", err),
-            })
+            .map_err(|err| StravaAuthError::Decode(err.into()))
     }
 }
