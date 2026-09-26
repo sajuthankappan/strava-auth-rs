@@ -12,6 +12,7 @@
 
 - Exchange an authorization code for access and refresh tokens
 - Refresh an expired access token
+- Revoke a token to deauthorize your app for an athlete
 - Bring your own `reqwest::Client` (timeouts, proxies, connection pooling)
 
 Tokens are returned as a `TokenRecord`, which includes the authenticated athlete as a [`strava-data`](https://crates.io/crates/strava-data) `SummaryAthlete` when Strava returns it.
@@ -37,6 +38,13 @@ Refresh an expired access token
 let token = client.token_api.refresh_token(refresh_token).await?;
 // Strava may rotate the refresh token, so store the new one
 save_refresh_token(&token.refresh_token);
+```
+
+Revoke a token when an athlete disconnects your app
+
+```rust
+// Accepts an access or refresh token; revoking an already-revoked token succeeds
+client.token_api.revoke(token.refresh_token).await?;
 ```
 
 Use a custom HTTP client

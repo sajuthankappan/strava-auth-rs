@@ -71,6 +71,40 @@ impl TokenApi {
         .await
     }
 
+    /// Revokes `token`, an access or refresh token, deauthorizing the application
+    /// for that athlete. Strava also revokes the token's paired access or refresh
+    /// token, and succeeds even if the token was already revoked or not found.
+    pub async fn revoke(&self, token: String) -> Result<(), StravaAuthError> {
+        let url = format!("{}/revoke", self.configuration.oauth_base_path);
+
+        let res = self
+            .client
+            .post(url.as_str())
+            .basic_auth(
+                &self.configuration.client_id,
+                Some(&self.configuration.client_secret),
+            )
+            .form(&[("token", token.as_str())])
+            .send()
+            .await
+            .map_err(|err| StravaAuthError::Request(err.into()))?;
+
+        let status = res.status();
+        if status != StatusCode::OK {
+            let body = res
+                .text()
+                .await
+                .map_err(|err| StravaAuthError::Request(err.into()))?;
+
+            return Err(StravaAuthError::Status {
+                status: status.as_u16(),
+                body,
+            });
+        }
+
+        Ok(())
+    }
+
     async fn post_token(
         &self,
         post_body: StravaTokenPostBody,
@@ -107,6 +141,8 @@ impl TokenApi {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use wiremock::matchers::{body_string, header, method, path};
+    use wiremock::{Mock, MockServer, ResponseTemplate};
 
     #[tokio::test]
     async fn with_client_sends_requests_through_given_client() {
@@ -125,5 +161,51 @@ mod tests {
             .unwrap_err();
 
         assert!(matches!(err, StravaAuthError::Request(_)), "{err:?}");
+    }
+
+    fn token_api_for(server: &MockServer) -> TokenApi {
+        let mut configuration = Configuration::new(String::from("id"), String::from("secret"));
+        configuration.oauth_base_path = format!("{}/oauth", server.uri());
+        TokenApi::new(Arc::new(configuration))
+    }
+
+    #[tokio::test]
+    async fn revoke_posts_token_with_client_credentials() {
+        let server = MockServer::start().await;
+        Mock::given(method("POST"))
+            .and(path("/oauth/revoke"))
+            // base64("id:secret")
+            .and(header("authorization", "Basic aWQ6c2VjcmV0"))
+            .and(header("content-type", "application/x-www-form-urlencoded"))
+            .and(body_string("token=tok"))
+            .respond_with(ResponseTemplate::new(200))
+            .expect(1)
+            .mount(&server)
+            .await;
+
+        token_api_for(&server)
+            .revoke(String::from("tok"))
+            .await
+            .unwrap();
+    }
+
+    #[tokio::test]
+    async fn revoke_maps_error_status() {
+        let server = MockServer::start().await;
+        Mock::given(method("POST"))
+            .and(path("/oauth/revoke"))
+            .respond_with(ResponseTemplate::new(401).set_body_string("bad client"))
+            .mount(&server)
+            .await;
+
+        let err = token_api_for(&server)
+            .revoke(String::from("tok"))
+            .await
+            .unwrap_err();
+
+        assert!(
+            matches!(&err, StravaAuthError::Status { status: 401, body } if body == "bad client"),
+            "{err:?}"
+        );
     }
 }

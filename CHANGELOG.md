@@ -1,3 +1,8 @@
+## 0.9.0
+
+* Add `TokenApi::revoke` to deauthorize an athlete via Strava's `POST /oauth/revoke`. It takes an access or refresh token and succeeds even if the token was already revoked
+* Breaking: Add `Configuration::oauth_base_path` (default `https://www.strava.com/oauth`), so `Configuration` can no longer be built with a struct literal that omits it
+
 ## 0.8.0
 
 * Breaking: Upgrade strava-data from 0.6 to 0.8, so `TokenRecord::athlete` is now a strava-data 0.8 `SummaryAthlete`. Its fields and JSON format are unchanged

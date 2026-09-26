@@ -1,6 +1,6 @@
 [package]
 name = "strava-auth"
-version = "0.8.0"
+version = "0.9.0"
 authors = ["Saju Thankappan <sajuthankappan@gmail.com>"]
 edition = "2024"
 rust-version = "1.87"
@@ -14,7 +14,7 @@ categories = ["api-bindings"]
 exclude = ["CLAUDE.md", ".github"]
 
 [dependencies]
-reqwest = { version = "0.13", features = ["json"] }
+reqwest = { version = "0.13", features = ["json", "form"] }
 serde = { version = "1", features = ["derive"] }
 thiserror = "2"
 strava-data = { version = "0.8.1", default-features = false }
@@ -23,3 +23,5 @@ strava-data = { version = "0.8.1", default-features = false }
 dotenvy = "0.15"
 env_logger = "0.11"
 tokio = { version = "1", features = ["macros", "rt"] }
+# 0.6.5 needs Rust 1.88 (let chains); keep the tests building on the MSRV.
+wiremock = ">=0.6, <0.6.5"
