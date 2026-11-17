@@ -190,6 +190,35 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn refresh_token_decodes_64_bit_athlete_id() {
+        let server = MockServer::start().await;
+        Mock::given(method("POST"))
+            .and(path("/oauth/token"))
+            .respond_with(ResponseTemplate::new(200).set_body_raw(
+                r#"{
+                    "token_type": "Bearer",
+                    "access_token": "access",
+                    "expires_at": 1700000000,
+                    "expires_in": 21600,
+                    "refresh_token": "refresh",
+                    "athlete": { "id": 9007199254740993, "id_str": "9007199254740993" }
+                }"#,
+                "application/json",
+            ))
+            .mount(&server)
+            .await;
+
+        let mut configuration = Configuration::new(String::from("id"), String::from("secret"));
+        configuration.base_path = server.uri();
+        let record = TokenApi::new(Arc::new(configuration))
+            .refresh_token(String::from("refresh"))
+            .await
+            .unwrap();
+
+        assert_eq!(record.athlete.unwrap().id, Some(9_007_199_254_740_993));
+    }
+
+    #[tokio::test]
     async fn revoke_maps_error_status() {
         let server = MockServer::start().await;
         Mock::given(method("POST"))

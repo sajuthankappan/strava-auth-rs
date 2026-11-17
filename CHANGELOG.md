@@ -1,3 +1,7 @@
+## 0.10.0
+
+* Breaking: Upgrade strava-data from 0.8 to 0.10, so `TokenRecord::athlete`'s `SummaryAthlete::id` is now `Option<i64>` instead of `Option<i32>`. Strava will send 64-bit athlete IDs after June 1, 2027. The JSON format is unchanged
+
 ## 0.9.0
 
 * Add `TokenApi::revoke` to deauthorize an athlete via Strava's `POST /oauth/revoke`. It takes an access or refresh token and succeeds even if the token was already revoked

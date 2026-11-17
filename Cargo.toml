@@ -1,6 +1,6 @@
 [package]
 name = "strava-auth"
-version = "0.9.0"
+version = "0.10.0"
 authors = ["Saju Thankappan <sajuthankappan@gmail.com>"]
 edition = "2024"
 rust-version = "1.87"
@@ -17,7 +17,7 @@ exclude = ["CLAUDE.md", ".github"]
 reqwest = { version = "0.13", features = ["json", "form"] }
 serde = { version = "1", features = ["derive"] }
 thiserror = "2"
-strava-data = { version = "0.8.1", default-features = false }
+strava-data = { version = "0.10", default-features = false }
 
 [dev-dependencies]
 dotenvy = "0.15"
